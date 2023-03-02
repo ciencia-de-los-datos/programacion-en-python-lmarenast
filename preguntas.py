@@ -12,6 +12,10 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+### Importar librerías
+import os
+import csv
+import re
 
 def pregunta_01():
     """
@@ -20,8 +24,14 @@ def pregunta_01():
     Rta/
     214
 
-    """
-    return
+    """ 
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        suma = 0
+        for row in reader:
+            suma = suma + int(row[1])
+
+    return suma
 
 
 def pregunta_02():
@@ -39,7 +49,24 @@ def pregunta_02():
     ]
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        lista_letras = []
+        lista_letras_totales = []
+        lista_final = []
+        for row in reader:
+            letra = row[0]
+            lista_letras.append(letra) # Agregar la primera columna a una lista
+            lista_letras_totales.append(letra)
+
+    lista_letras = list(set(lista_letras)) #Eliminar duplicados
+    lista_letras.sort() #Ordenar alfabeticamente  
+
+    for letra in lista_letras:
+        cantidad = lista_letras_totales.count(letra) # Contar la cantidad de veces que se repite cada letra
+        lista_final.append((letra, cantidad)) # Agregar la letra y la cantidad a una lista
+
+    return lista_final
 
 
 def pregunta_03():
@@ -57,7 +84,28 @@ def pregunta_03():
     ]
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        lista_letras = []
+        lista = []
+        lista_final = []
+        for row in reader:
+            letra = row[0]
+            suma = int(row[1]) # Sumar la segunda columna
+            lista_letras.append(letra) # Agregar la primera columna a una lista
+            lista.append((letra, suma)) # Agregar la letra y la suma a una lista
+
+        lista_letras = list(set(lista_letras)) #Eliminar duplicados
+        lista_letras.sort() #Ordenar alfabeticamente
+
+        for letra in lista_letras:
+            suma = 0
+            for letra2 in lista:
+                if letra2[0] == letra:
+                    suma = suma + letra2[1]
+            lista_final.append((letra, suma))
+        
+    return lista_final
 
 
 def pregunta_04():
@@ -82,7 +130,33 @@ def pregunta_04():
     ]
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        lista_fechas = []
+        lista_meses = []
+        lista_meses_totales = []
+        lista_final = []
+        for row in reader:
+            fecha = row[2]
+            lista_fechas.append(fecha) # Agregar la tercera columna a una lista
+            lista_meses_totales.append(fecha)
+
+    #Extraer los meses de la lista
+    for fecha in lista_fechas:
+        mes = re.findall(r'(?<=-)(.*?)(?=-)', fecha)
+        lista_meses.append(mes[0])
+        lista_meses_totales.append(mes[0])
+
+    lista_meses = list(set(lista_meses)) #Eliminar duplicados
+    lista_meses.sort() #Ordenar
+
+    #Contar la cantidad de veces que se repite cada mes
+    for mes in lista_meses:
+        cantidad = lista_meses_totales.count(mes)
+        lista_final.append((mes, cantidad))
+
+
+    return lista_final
 
 
 def pregunta_05():
@@ -100,7 +174,53 @@ def pregunta_05():
     ]
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        lista_letras = []
+        lista = []
+        lista_final = []
+        for row in reader:
+            letra = row[0]
+            columna_2 = int(row[1])
+            lista_letras.append(letra) # Agregar la primera columna a una lista
+            lista.append((letra, columna_2)) # Agregar la letra y la columna 2 a una lista
+
+
+        lista_letras = list(set(lista_letras)) #Eliminar duplicados
+        lista_letras.sort() #Ordenar alfabeticamente
+
+        lista_A = []
+        lista_B = []
+        lista_C = []
+        lista_D = []
+        lista_E = []
+
+        for i in range(len(lista)):
+            if lista[i][0] == "A":
+                lista_A.append(lista[i][1])
+            elif lista[i][0] == "B":
+                lista_B.append(lista[i][1])
+            elif lista[i][0] == "C":
+                lista_C.append(lista[i][1])
+            elif lista[i][0] == "D":
+                lista_D.append(lista[i][1])
+            elif lista[i][0] == "E":
+                lista_E.append(lista[i][1])
+    
+        for letra in lista_letras:
+            if letra == "A":
+                lista_final.append((letra, max(lista_A), min(lista_A)))
+            elif letra == "B":
+                lista_final.append((letra, max(lista_B), min(lista_B)))
+            elif letra == "C":
+                lista_final.append((letra, max(lista_C), min(lista_C)))
+            elif letra == "D":
+                lista_final.append((letra, max(lista_D), min(lista_D)))
+            elif letra == "E":
+                lista_final.append((letra, max(lista_E), min(lista_E)))
+
+
+    return lista_final
 
 
 def pregunta_06():
@@ -125,7 +245,29 @@ def pregunta_06():
     ]
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        diccionario = {}
+        lista_final = []
+        for row in reader:
+            columna_5 = row[4]
+            lista = columna_5.split(",")
+            for i in range(len(lista)):
+                clave = lista[i][0:3]
+                valor = lista[i][4:]
+                if clave in diccionario:
+                    diccionario[clave].append(valor)
+                else:
+                    diccionario[clave] = [valor]
+
+        diccionario = dict(sorted(diccionario.items())) #Ordenar el diccionario
+
+    for clave in diccionario:
+        lista_valores = diccionario[clave]
+        lista_valores = list(map(int, lista_valores))
+        lista_final.append((clave, min(lista_valores), max(lista_valores)))
+
+    return lista_final
 
 
 def pregunta_07():
@@ -149,7 +291,26 @@ def pregunta_07():
     ]
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        lista_columna_1 = []
+        lista = []
+        for row in reader:
+            columna_2 = row[1]
+            lista_columna_1.append(int(columna_2))
+            lista.append((int(columna_2), row[0]))
+
+    lista_columna_1 = list(set(lista_columna_1)) #Eliminar duplicados
+    lista_columna_1.sort() #Ordenar
+
+    for i in range(len(lista_columna_1)):
+        lista_letras = []
+        for j in range(len(lista)):
+            if lista_columna_1[i] == lista[j][0]:
+                lista_letras.append(lista[j][1])
+        lista_columna_1[i] = (lista_columna_1[i], lista_letras)
+
+    return lista_columna_1
 
 
 def pregunta_08():
@@ -174,7 +335,12 @@ def pregunta_08():
     ]
 
     """
-    return
+    lista = pregunta_07()
+
+    for i in range(len(lista)):
+        lista[i] = (lista[i][0], sorted(list(set(lista[i][1]))))
+        
+    return lista
 
 
 def pregunta_09():
@@ -197,7 +363,22 @@ def pregunta_09():
     }
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        diccionario = {}
+        for row in reader:
+            columna_5 = row[4]
+            lista = columna_5.split(",")
+            for i in range(len(lista)):
+                clave = lista[i][0:3]
+                if clave in diccionario:
+                    diccionario[clave] = diccionario[clave] + 1
+                else:
+                    diccionario[clave] = 1
+
+    diccionario = dict(sorted(diccionario.items())) #Ordenar el diccionario
+
+    return diccionario
 
 
 def pregunta_10():
@@ -218,7 +399,18 @@ def pregunta_10():
 
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        lista = []
+        for row in reader:
+            columna_1 = row[0]
+            columna_4 = row[3]
+            columna_5 = row[4]
+            lista_columna_4 = columna_4.split(",")
+            lista_columna_5 = columna_5.split(",")
+            lista.append((columna_1, len(lista_columna_4), len(lista_columna_5)))
+    
+    return lista
 
 
 def pregunta_11():
@@ -239,7 +431,23 @@ def pregunta_11():
 
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        diccionario = {}
+        for row in reader:
+            columna_2 = int(row[1])
+            columna_4 = row[3]
+            lista_columna_4 = columna_4.split(",")
+            for i in range(len(lista_columna_4)):
+                clave = lista_columna_4[i]
+                if clave in diccionario:
+                    diccionario[clave] = diccionario[clave] + columna_2
+                else:
+                    diccionario[clave] = columna_2
+    
+    diccionario = dict(sorted(diccionario.items())) #Ordenar el diccionario
+
+    return diccionario
 
 
 def pregunta_12():
@@ -257,4 +465,21 @@ def pregunta_12():
     }
 
     """
-    return
+    with open("data.csv") as file:
+        reader = csv.reader(file, delimiter='\t')
+        diccionario = {}
+        for row in reader:
+            columna_1 = row[0]
+            columna_5 = row[4]
+            clave = columna_1
+            lista_columna_5 = columna_5.split(",")
+            for i in range(len(lista_columna_5)):
+                lista_columna_5[i] = int(re.sub("[^0-9]", "", lista_columna_5[i])) #Expresión regular para eliminar los números
+            if clave in diccionario:
+                diccionario[clave] = diccionario[clave] + sum(lista_columna_5)
+            else:
+                diccionario[clave] = sum(lista_columna_5)
+
+    diccionario = dict(sorted(diccionario.items())) #Ordenar el diccionario
+    
+    return diccionario
